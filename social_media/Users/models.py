@@ -1,6 +1,7 @@
 from django.db import models
-from .managers import CustomUserManager
 from django.contrib.auth.models import AbstractBaseUser
+from .managers import CustomUserManager
+
 
 class CustomUser(AbstractBaseUser):
     email = models.EmailField(unique=True)
@@ -10,12 +11,8 @@ class CustomUser(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
 
     objects = CustomUserManager()
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return self.email   
-
-
-
+        return self.email

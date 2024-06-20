@@ -3,14 +3,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 from .models import CustomUser
-from .serializers import CustomUserSerializer,UserLoginSerializer,TokenObtainPairSerializer
+from .serializers import CustomUserSerializer,UserLoginSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import AllowAny
+from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class CustomUserCreateView(APIView):
-    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs): 
         email = request.data.get('email')
@@ -33,8 +33,7 @@ class CustomUserCreateView(APIView):
     
 
 class CustomTokenObtainPairView(APIView):
-    permission_classes = [AllowAny] 
-    
+
     def post(self, request, *args, **kwargs):
         serializer = TokenObtainPairSerializer(data=request.data)
         if serializer.is_valid():
@@ -42,8 +41,8 @@ class CustomTokenObtainPairView(APIView):
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
+
 class UserLoginView(APIView):
-    permission_classes = [AllowAny]
         
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
@@ -55,5 +54,6 @@ class UserLoginView(APIView):
                 'access': str(refresh.access_token),
             })
         else:
+            print("serializer errors",serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
